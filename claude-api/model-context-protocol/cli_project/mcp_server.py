@@ -13,8 +13,6 @@ docs = {
     "spec.txt": "These specifications define the technical requirements for the equipment.",
 }
 
-# TODO: Write a resource to return all doc id's
-# TODO: Write a resource to return the contents of a particular doc
 # TODO: Write a prompt to rewrite a doc in markdown format
 # TODO: Write a prompt to summarize a doc
 
@@ -56,11 +54,13 @@ def edit_document(
     docs[doc_id] = docs[doc_id].replace(old_str, new_str)
 
 
+# Write a resource to return all doc id's
 @mcp.resource("docs://documents", mime_type="application/json")
 def list_docs() -> list[str]:
     return list(docs.keys())
 
 
+# Write a resource to return the contents of a particular doc
 @mcp.resource("docs://documents/{doc_id}", mime_type="text/plain")
 def fetch_doc(doc_id: str) -> str:
     if doc_id not in docs:
