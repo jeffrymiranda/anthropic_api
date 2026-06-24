@@ -1,5 +1,6 @@
 from pydantic import Field
 from mcp.server.fastmcp import FastMCP
+from mcp.server.fastmcp.prompts import base
 
 mcp = FastMCP("DocumentMCP", log_level="ERROR")
 
@@ -12,12 +13,6 @@ docs = {
     "plan.md": "The plan outlines the steps for the project's implementation.",
     "spec.txt": "These specifications define the technical requirements for the equipment.",
 }
-
-# TODO: Write a prompt to rewrite a doc in markdown format
-# TODO: Write a prompt to summarize a doc
-
-
-from mcp.server.fastmcp.prompts import base
 
 
 # Write a tool to read a doc
@@ -68,6 +63,7 @@ def fetch_doc(doc_id: str) -> str:
     return docs[doc_id]
 
 
+#  Write a prompt to rewrite a doc in markdown format
 @mcp.prompt(
     name="format",
     description="Rewrites the contents of the document in Markdown format.",
@@ -89,6 +85,7 @@ def format_document(
 
     return [base.UserMessage(prompt)]
 
+# TODO: Write a prompt to summarize a doc
 
 if __name__ == "__main__":
     mcp.run(transport="stdio")
