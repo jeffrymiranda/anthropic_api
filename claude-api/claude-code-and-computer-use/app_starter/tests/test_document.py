@@ -1,6 +1,9 @@
 import os
 import pytest
-from tools.document import binary_document_to_markdown
+from tools.document import (
+    binary_document_to_markdown,
+    document_path_to_markdown,
+)
 
 
 class TestBinaryDocumentToMarkdown:
@@ -32,6 +35,40 @@ class TestBinaryDocumentToMarkdown:
         assert len(result) > 0
         # Check for typical markdown formatting - this will depend on your actual test file
         assert "#" in result or "-" in result or "*" in result
+
+    def test_document_path_to_markdown_with_docx(self):
+        """Test converting a DOCX document to markdown via its file path."""
+        result = document_path_to_markdown(self.DOCX_FIXTURE)
+
+        assert isinstance(result, str)
+        assert len(result) > 0
+        assert "#" in result or "-" in result or "*" in result
+
+    def test_document_path_to_markdown_with_pdf(self):
+        """Test converting a PDF document to markdown via its file path."""
+        result = document_path_to_markdown(self.PDF_FIXTURE)
+
+        assert isinstance(result, str)
+        assert len(result) > 0
+        assert "#" in result or "-" in result or "*" in result
+
+    def test_document_path_to_markdown_missing_file(self):
+        """A nonexistent path should raise a ValueError."""
+        with pytest.raises(ValueError):
+            document_path_to_markdown(
+                os.path.join(self.FIXTURES_DIR, "does_not_exist.pdf")
+            )
+
+    def test_document_path_to_markdown_unsupported_type(self):
+        """An unsupported extension should raise a ValueError."""
+        unsupported = os.path.join(self.FIXTURES_DIR, "mcp_docs.docx.txt")
+        with open(unsupported, "w") as f:
+            f.write("plain text")
+        try:
+            with pytest.raises(ValueError):
+                document_path_to_markdown(unsupported)
+        finally:
+            os.remove(unsupported)
 
     def test_binary_document_to_markdown_with_pdf(self):
         """Test converting a PDF document to markdown."""
